@@ -39,7 +39,9 @@ class RNN(tf.keras.Model):
 
     def call(self, inputs, from_logits=False):
         # inputs = tf.one_hot(inputs, depth=self.num_chars)  # [batch_size, seq_length, num_chars] (50,40,57)
-        inputs = self.emb(inputs)  # [batch_size, seq_length, emb_dim] (50,40,20)
+        inputs_1 = self.emb(inputs)  # [batch_size, seq_length, emb_dim] (50,40,20)
+        inputs_2 = self.emb(inputs)
+        inputs = tf.keras.backend.concatenate([inputs_1, inputs_2])  # concat two embedding tensors as inputs
         state = self.cell.get_initial_state(inputs)  # 获得 RNN 的初始状态
         # state = self.cell.get_initial_state(batch_size=)
         # for t in range(self.seq_length):
