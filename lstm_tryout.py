@@ -33,14 +33,15 @@ class RNN(tf.keras.Model):
         self.seq_length = seq_length
         self.batch_size = batch_size
         # self.cell = tf.keras.layers.LSTMCell(units=256)
-        self.emb = tf.keras.layers.Embedding(input_dim=self.num_chars, output_dim=20, input_length=self.seq_length)
+        self.emb_1 = tf.keras.layers.Embedding(input_dim=self.num_chars, output_dim=20, input_length=self.seq_length)
+        self.emb_2 = tf.keras.layers.Embedding(input_dim=self.num_chars, output_dim=30, input_length=self.seq_length)
         self.cell = tf.keras.layers.LSTM(units=256)
         self.dense = tf.keras.layers.Dense(units=self.num_chars)
 
     def call(self, inputs, from_logits=False):
         # inputs = tf.one_hot(inputs, depth=self.num_chars)  # [batch_size, seq_length, num_chars] (50,40,57)
-        inputs_1 = self.emb(inputs)  # [batch_size, seq_length, emb_dim] (50,40,20)
-        inputs_2 = self.emb(inputs)
+        inputs_1 = self.emb_1(inputs)  # [batch_size, seq_length, emb_dim] (50,40,20)
+        inputs_2 = self.emb_2(inputs)
         inputs = tf.keras.backend.concatenate([inputs_1, inputs_2])  # concat two embedding tensors as inputs
         state = self.cell.get_initial_state(inputs)  # 获得 RNN 的初始状态
         # state = self.cell.get_initial_state(batch_size=)
